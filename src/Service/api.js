@@ -56,14 +56,14 @@ export const addMemberToConversation = async (conversationId, userId) => {
     body: JSON.stringify({ userId }),
   });
   
-  const textResponse = await response.text();  // Get raw text first
-  console.log("Raw response:", textResponse);  // Log raw response
+  const textResponse = await response.text();
+  console.log("Raw response:", textResponse);
   
   if (!response.ok) {
-    throw new Error(textResponse);  // Use raw text as error message if not okay
+    throw new Error(textResponse);
   }
   
-  const jsonResponse = JSON.parse(textResponse);  // Parse as JSON if okay
+  const jsonResponse = JSON.parse(textResponse); 
   return jsonResponse;
   
 };
