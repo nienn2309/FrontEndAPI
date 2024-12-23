@@ -1,21 +1,59 @@
-import React from 'react'
-import More from "../Image/more.png"
-import Messages from './Messages'
-import Input from './Input'
+import React, { useState } from 'react';
+import Plus from "../Image/plus.png";
+import Messages from './Messages';
+import Input from './Input';
+import { useConversation } from './ConversationContext';
+import { addMemberToConversation } from '../../Service/api';
 
 const Chat = () => {
-  return (
-    <div className='chat'>
-        <div className='chatInfo'>
-            <span>Jane</span>
-            <div className='chatIcons'>
-                <img src={More} alt=''/>
-            </div>
-        </div>
-        <Messages/>
-        <Input/>
-    </div>
-  )
-}
+  const { conversation } = useConversation();
+  const [userId, setUserId] = useState('');
+  const [isPromptVisible, setIsPromptVisible] = useState(false);
 
-export default Chat
+  const handleAddMember = async () => {
+    if (!userId) {
+      alert("Please enter a user ID.");
+      return;
+    }
+
+    try {
+      await addMemberToConversation(conversation.id, userId);
+      setUserId('');
+      setIsPromptVisible(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div className="chat">
+      <div className="chatInfo">
+        <span>{conversation.name}</span>
+        <div
+          className="chatIcons"
+          onClick={() => setIsPromptVisible(!isPromptVisible)}
+        >
+          <img src={Plus} alt="Plus" />
+        </div>
+      </div>
+
+      {isPromptVisible && (
+        <div className="addMemberPrompt">
+          <input
+            type="text"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            placeholder="Enter user ID"
+          />
+          <button onClick={handleAddMember}>Add Member</button>
+          <button onClick={() => setIsPromptVisible(false)}>Cancel</button>
+        </div>
+      )}
+
+      <Messages />
+      <Input />
+    </div>
+  );
+};
+
+export default Chat;

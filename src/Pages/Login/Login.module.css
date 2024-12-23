@@ -1,72 +1,99 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
 .loginpage {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     background-color: #e63946;
-}
-
-.wrapper {
+  }
+  
+  .wrapper {
     width: 420px;
     background-color: #a8dadc;
     color: #1d3557;
     border-radius: 10px;
     padding: 30px 40px;
-}
-
-.wrapper span {
-    font-size: 36px;
-    text-align: center;
-}
-
-.wrapper .inputbox {
-    position: relative;
+  }
+  
+  .loginbox {
     width: 100%;
+  }
+  
+  .loginheader {
+    color: #1d3557;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .loginheader span {
+    font-size: 36px;
+    font-weight: 600;
+  }
+  
+  .inputbox {
+    position: relative;
+    width: 84%;
     height: 50px;
     margin: 30px 0;
-}
-
-.loginheader {
-    color: #1d3557;
-}
-
-.inputbox input {
+  }
+  
+  .inputbox input {
     width: 100%;
     height: 100%;
     background: transparent;
-    border: none;
-    outline: none;
-    border: 2px solid rgba(255, 255, 255, .2);
+    border: 2px solid rgba(29, 53, 87, 0.2);
     border-radius: 40px;
     font-size: 16px;
     color: #1d3557;
-    padding: 20px 45px 20px 20px;
-}
-
-.inputbox input::placeholder {
+    padding: 0 45px 0 20px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .inputbox input:focus {
+    border-color: #1d3557;
+  }
+  
+  .inputbox input::placeholder {
     color: #1d3557;
-}
-
-.inputbox i {
+    opacity: 0.7;
+  }
+  
+  .inputbox i {
     position: absolute;
     right: 20px;
     top: 50%;
-    transform: translate(-50%);
+    transform: translateY(-50%);
     font-size: 20px;
-}
-
-.wrapper .loginbtn {
+    color: #1d3557;
+  }
+  
+  .loginbtn {
     width: 100%;
     height: 45px;
     background: #fff;
     border: none;
     outline: none;
     border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     font-size: 16px;
-    color: #333;
+    color: #1d3557;
     font-weight: 600;
-}
+    transition: background-color 0.3s ease;
+  }
+  
+  .loginbtn:hover {
+    background-color: #f1faee;
+  }
+  
+  .loginbtn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  .error {
+    color: #e63946;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
