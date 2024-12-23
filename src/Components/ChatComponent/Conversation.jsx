@@ -23,7 +23,7 @@ const Conversation = () => {
 
     loadConversations();
 
-    subscribeToMessages((user, message) => {
+    subscribeToMessages(() => {
       loadConversations();
     });
   }, []);

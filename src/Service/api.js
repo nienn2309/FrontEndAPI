@@ -29,6 +29,29 @@ export const subscribeToMessages = (callback) => {
   hubConnection.on("ReceiveMessage", callback);
 };
 
+export const addMemberToConversation = async (conversationId, userId) => {
+  if (!conversationId || !userId) {
+    throw new Error('Conversation ID and User ID are required');
+  }
+
+  const response = await fetch(`${API_BASE_URL}/UserConversation/${conversationId}/add-member`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    console.error("API Error Response:", errorData);
+    throw new Error(errorData || 'Failed to add member');
+  }
+
+  await hubConnection.invoke("SendMessage", "System", 
+    `User ${userId} joined conversation ${conversationId}`);
+
+  return response.text();
+};
+
 export const fetchConversations = async (userId) => {
   if (!userId) {
     throw new Error('User ID not found');
@@ -43,29 +66,6 @@ export const fetchConversations = async (userId) => {
   }
 
   return response.json();
-};
-
-export const addMemberToConversation = async (conversationId, userId) => {
-  if (!conversationId || !userId) {
-    throw new Error('Conversation ID and User ID are required');
-  }
-
-  const response = await fetch(`${API_BASE_URL}/UserConversation/${conversationId}/add-member`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId }),
-  });
-  
-  const textResponse = await response.text();
-  console.log("Raw response:", textResponse);
-  
-  if (!response.ok) {
-    throw new Error(textResponse);
-  }
-  
-  const jsonResponse = JSON.parse(textResponse); 
-  return jsonResponse;
-  
 };
 
 export const createConversation = async (name, ownerId) => {

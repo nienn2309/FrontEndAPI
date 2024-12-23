@@ -18,10 +18,12 @@ const Chat = () => {
 
     try {
       await addMemberToConversation(conversation.id, userId);
+      alert("User added successfully!");
       setUserId('');
       setIsPromptVisible(false);
     } catch (error) {
       console.error(error);
+      alert(error.message || "Failed to add user.");
     }
   };
 
