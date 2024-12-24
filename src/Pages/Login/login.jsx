@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import LSstyle from "./Login.module.css";
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from "../../Service/api";
-import GoogleLogin from "@react-oauth/google";
 
 const Login = () => {
   const [username, setUsername] = useState("");
