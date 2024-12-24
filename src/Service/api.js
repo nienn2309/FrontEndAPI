@@ -24,9 +24,52 @@ export const initializeSignalR = async () => {
   }
 };
 
-// Subscribe to SignalR events
 export const subscribeToMessages = (callback) => {
-  hubConnection.on("ReceiveMessage", callback);
+  hubConnection.off("ReceiveMessage");
+  hubConnection.on("ReceiveMessage", (user, message) => {
+    console.log(`${user}: ${message}`);
+    if (callback) callback(user, message);
+  });
+};
+
+export const joinConversationGroup = async (conversationId) => {
+  if (!conversationId) {
+    throw new Error("Conversation ID is required to join the group");
+  }
+
+  try {
+    await hubConnection.invoke("JoinGroup", conversationId);
+    console.log(`Joined group for conversation: ${conversationId}`);
+  } catch (err) {
+    console.error("Error joining group:", err);
+  }
+};
+
+export const leaveConversationGroup = async (conversationId) => {
+  if (!conversationId) {
+    throw new Error("Conversation ID is required to leave the group");
+  }
+
+  try {
+    await hubConnection.invoke("LeaveGroup", conversationId);
+    console.log(`Left group for conversation: ${conversationId}`);
+  } catch (err) {
+    console.error("Error leaving group:", err);
+  }
+};
+
+let newConversationHandler;
+
+export const subscribeToNewConversations = (callback) => {
+  if (newConversationHandler) {
+    hubConnection.off("NewConversation", newConversationHandler);
+  }
+
+  newConversationHandler = (conversationId, name) => {
+    if (callback) callback(conversationId, name);
+  };
+
+  hubConnection.on("NewConversation", newConversationHandler);
 };
 
 export const addMemberToConversation = async (conversationId, userId) => {
@@ -46,7 +89,7 @@ export const addMemberToConversation = async (conversationId, userId) => {
     throw new Error(errorData || 'Failed to add member');
   }
 
-  await hubConnection.invoke("SendMessage", "System", 
+  await hubConnection.invoke("NotifyNewConversation", "System", 
     `User ${userId} joined conversation ${conversationId}`);
 
   return response.text();
@@ -86,7 +129,7 @@ export const createConversation = async (name, ownerId) => {
   const result = await response.json();
   
   // Notify through SignalR
-  await hubConnection.invoke("SendMessage", "System", 
+  await hubConnection.invoke("NotifyNewConversation", "System", 
     `New conversation "${name}" created by ${ownerId}`);
 
   return result;
@@ -112,17 +155,17 @@ export const sendMessageToConversation = async (conversationId, userId, content)
     throw new Error(errorData.message || 'Failed to send message');
   }
 
-  await hubConnection.invoke("SendMessage", userId, content);
+  await hubConnection.invoke("SendMessageToGroup", conversationId, userId, content);
 
   return response.json();
 };
 
-export const fetchMessagesForConversation = async (conversationId, page = 1, pageSize = 10) => {
+export const fetchMessagesForConversation = async (conversationId) => {
   if (!conversationId) {
     throw new Error('Conversation ID is required');
   }
 
-  const response = await fetch(`${API_BASE_URL}/Conversation/${conversationId}/messages?page=${page}&pageSize=${pageSize}`, {
+  const response = await fetch(`${API_BASE_URL}/Conversation/${conversationId}/messages`, {
     headers: { 'accept': 'text/plain' },
   });
 

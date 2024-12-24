@@ -19,7 +19,7 @@ const Messages = () => {
       if (!conversation.id) return;
 
       try {
-        const data = await fetchMessagesForConversation(conversation.id, 1, 10);
+        const data = await fetchMessagesForConversation(conversation.id);
         setMessages(data);
         setLoading(false);
       } catch (err) {
@@ -29,7 +29,7 @@ const Messages = () => {
     };
 
     getMessages();
-    subscribeToMessages((user, message) => {
+    subscribeToMessages(() => {
       getMessages();
     });
   }, [conversation.id]);

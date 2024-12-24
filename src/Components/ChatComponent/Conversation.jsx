@@ -1,32 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { useConversation } from './ConversationContext';
-import { fetchConversations, subscribeToMessages } from '../../Service/api';
+import React, { useState, useEffect } from "react";
+import { useConversation } from "./ConversationContext";
+import {
+  fetchConversations,
+  subscribeToNewConversations,
+  joinConversationGroup,
+  leaveConversationGroup,
+} from "../../Service/api";
 
 const Conversation = () => {
   const [conversations, setConversations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeConversationId, setActiveConversationId] = useState(null);
   const { setConversation } = useConversation();
 
   useEffect(() => {
+    let isSubscribed = true;
+  
     const loadConversations = async () => {
       try {
-        const userId = localStorage.getItem('userId');
+        const userId = localStorage.getItem("userId");
         const data = await fetchConversations(userId);
-        setConversations(data);
+        if (isSubscribed) setConversations(data);
       } catch (err) {
         setError(err);
       } finally {
-        setLoading(false);
+        if (isSubscribed) setLoading(false);
       }
     };
-
+  
     loadConversations();
-
-    subscribeToMessages(() => {
+  
+    subscribeToNewConversations(() => {
       loadConversations();
     });
+  
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
+  
+
+  const handleConversationClick = async (chat) => {
+    try {
+      if (activeConversationId) {
+        await leaveConversationGroup(activeConversationId);
+      }
+
+      setConversation({ id: chat.conversationId, name: chat.name });
+      await joinConversationGroup(chat.conversationId);
+
+      setActiveConversationId(chat.conversationId);
+    } catch (err) {
+      console.error("Error switching conversation group:", err);
+    }
+  };
 
   if (loading) return <div className="chats">Loading conversations...</div>;
   if (error) return <div className="chats">Error: {error.message}</div>;
@@ -36,8 +64,8 @@ const Conversation = () => {
       {conversations.map((chat) => (
         <div
           key={chat.conversationId}
-          className="userChat"
-          onClick={() => setConversation({ id: chat.conversationId, name: chat.name })}
+          className={`userChat ${chat.conversationId === activeConversationId ? "active" : ""}`}
+          onClick={() => handleConversationClick(chat)}
         >
           <img
             src="https://images.pexels.com/photos/3533228/pexels-photo-3533228.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"

@@ -108,6 +108,9 @@
       flex: 1;
       background-color: #3e3c61;
       position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
 
       .navbar {
         display: flex;
@@ -117,6 +120,7 @@
         padding: 10px;
         justify-content: space-between;
         color: #ddddf7;
+        flex-shrink: 0;
 
         .logo {
           font-weight: bold;
@@ -150,8 +154,10 @@
           }
         }
       }
+
       .search {
         border-bottom: 1px solid gray;
+        flex-shrink: 0;
 
         .searchForm {
           padding: 10px;
@@ -161,12 +167,39 @@
             border: none;
             color: white;
             outline: none;
+            width: 100%;
 
             &::placeholder {
               color: lightgray;
             }
           }
         }
+      }
+
+      .chats {
+        overflow-y: auto;
+        flex: 1;
+
+        /* Scrollbar Styling */
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: #3e3c61;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #2f2d52;
+          border-radius: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+          background: #232244;
+        }
+
+        scrollbar-width: thin;
+        scrollbar-color: #2f2d52 #3e3c61;
       }
 
       .userChat {
@@ -178,6 +211,10 @@
         cursor: pointer;
 
         &:hover {
+          background-color: #2f2d52;
+        }
+
+        &.active {
           background-color: #2f2d52;
         }
 
@@ -200,8 +237,12 @@
         }
       }
     }
+
     .chat {
       flex: 2;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
 
       .chatInfo {
         height: 50px;
@@ -211,6 +252,7 @@
         justify-content: space-between;
         padding: 10px;
         color: lightgray;
+        flex-shrink: 0;
       }
 
       .chatIcons {
@@ -226,8 +268,30 @@
       .messages {
         background-color: #ddddf7;
         padding: 10px;
-        height: calc(100% - 160px);
-        overflow: scroll;
+        height: calc(100% - 110px);
+        overflow-y: auto;
+        flex: 1;
+
+        /* Scrollbar Styling */
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 4px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+
+        scrollbar-width: thin;
+        scrollbar-color: #888 #f1f1f1;
 
         .message {
           display: flex;
@@ -247,8 +311,13 @@
               object-fit: cover;
             }
           }
+
           .messageContent {
             max-width: 80%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            word-break: break-word;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -287,13 +356,15 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-shrink: 0;
 
-        input {
+        textarea {
           width: 100%;
           border: none;
           outline: none;
           color: #2f2d52;
           font-size: 18px;
+          resize: none;
 
           &::placeholder {
             color: lightgray;
@@ -329,6 +400,8 @@
   padding: 20px;
   display: flex;
   gap: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 
   input {
     padding: 5px;
@@ -395,6 +468,7 @@
     }
   }
 }
+
 .modal {
   position: fixed;
   top: 0;
@@ -459,6 +533,8 @@
 .create-conversation {
   display: flex;
   justify-content: center;
+  padding: 10px;
+  flex-shrink: 0;
 
   button {
     padding: 5px 10px;

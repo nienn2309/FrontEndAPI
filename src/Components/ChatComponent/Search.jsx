@@ -24,21 +24,23 @@ const Search = () => {
     }
   };
 
-  const handleUserClick = async (userId) => {
+  const handleUserClick = async (userId, username) => {
     try {
       if (!currentUserId) {
         console.error('Current user ID is not available');
         return;
       }
 
-      // Create a new conversation with the clicked user
-      const conversation = await createConversation('New Conversation', currentUserId);
-      console.log(conversation);
+      const conversationName = `With ${username}`;
+      const conversation = await createConversation(conversationName, currentUserId);
 
-      // Add the clicked user to the conversation
       await addMemberToConversation(conversation.conversationId, userId);
 
       console.log(`Conversation created and user ${userId} added successfully.`);
+
+      setResults([]);
+
+      setQuery('');
     } catch (err) {
       console.error('Failed to create conversation or add user:', err);
     }
@@ -63,7 +65,7 @@ const Search = () => {
           <div
             className="userChat"
             key={user.userId}
-            onClick={() => handleUserClick(user.userId)} // Handle user click to create conversation
+            onClick={() => handleUserClick(user.userId, user.username)}
           >
             <img
               src="https://images.pexels.com/photos/3533228/pexels-photo-3533228.png?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"

@@ -14,20 +14,28 @@ const Input = () => {
     }
 
     try {
-      await sendMessageToConversation(conversation.id, userId, message);
+      await sendMessageToConversation(conversation.id, userId, message.trim());
       setMessage('');
     } catch (error) {
       alert(error.message || 'Failed to send message');
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
   return (
     <div className="input">
-      <input
-        type="text"
+      <textarea
         placeholder="Type something..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={handleKeyDown}
+        rows="3"
       />
       <div className="send">
         <button onClick={sendMessage}>Send</button>
