@@ -11,7 +11,8 @@ const hubConnection = new signalR.HubConnectionBuilder()
   .withAutomaticReconnect()
   .build();
 
-  let activeConversationId = null;
+let activeConversationId = null;
+let conversationTimeHandler = null;
 
 // Initialize SignalR connection
 export const initializeSignalR = async () => {
@@ -34,6 +35,18 @@ export const subscribeToMessages = (callback) => {
       console.log(`${user}: ${message} in conversation: ${conversationId}`);
     }
   });
+};
+
+export const subscribeToConversationTimeUpdates = (callback) => {
+  if (conversationTimeHandler) {
+    hubConnection.off("ConversationTimeUpdated", conversationTimeHandler);
+  }
+
+  conversationTimeHandler = (conversationId, newTime) => {
+    if (callback) callback(conversationId, newTime);
+  };
+
+  hubConnection.on("ConversationTimeUpdated", conversationTimeHandler);
 };
 
 export const joinConversationGroup = async (conversationId) => {
