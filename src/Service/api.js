@@ -11,6 +11,8 @@ const hubConnection = new signalR.HubConnectionBuilder()
   .withAutomaticReconnect()
   .build();
 
+  let activeConversationId = null;
+
 // Initialize SignalR connection
 export const initializeSignalR = async () => {
   try {
@@ -27,8 +29,10 @@ export const initializeSignalR = async () => {
 export const subscribeToMessages = (callback) => {
   hubConnection.off("ReceiveMessage");
   hubConnection.on("ReceiveMessage", (user, message, conversationId) => {
-    console.log(`${user}: ${message} in conversation: ${conversationId}`);
-    if (callback) callback(user, message, conversationId);
+    if (conversationId === activeConversationId) {
+      if (callback) callback(user, message, conversationId);
+      console.log(`${user}: ${message} in conversation: ${conversationId}`);
+    }
   });
 };
 
@@ -38,8 +42,8 @@ export const joinConversationGroup = async (conversationId) => {
   }
 
   try {
+    activeConversationId = conversationId;
     await hubConnection.invoke("JoinGroup", conversationId);
-    //console.log(`Joined group for conversation: ${conversationId}`);
   } catch (err) {
     console.error("Error joining group:", err);
   }
@@ -51,8 +55,10 @@ export const leaveConversationGroup = async (conversationId) => {
   }
 
   try {
+    if (activeConversationId === conversationId) {
+      activeConversationId = null;
+    }
     await hubConnection.invoke("LeaveGroup", conversationId);
-    //console.log(`Left group for conversation: ${conversationId}`);
   } catch (err) {
     console.error("Error leaving group:", err);
   }
