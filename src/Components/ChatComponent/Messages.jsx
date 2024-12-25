@@ -28,10 +28,17 @@ const Messages = () => {
       }
     };
 
+    const handleNewMessage = (user, message, conversationId) => {
+      if (conversationId === conversation.id) {
+        getMessages();
+      }
+    };
+
     getMessages();
-    subscribeToMessages(() => {
-      getMessages();
-    });
+    subscribeToMessages(handleNewMessage);
+    return () => {
+      subscribeToMessages(null);
+    };
   }, [conversation.id]);
 
   if (loading) {

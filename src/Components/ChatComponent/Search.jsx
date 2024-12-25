@@ -6,6 +6,7 @@ const Search = () => {
   const [results, setResults] = useState([]);
 
   const currentUserId = localStorage.getItem('userId');
+  const currentusername = localStorage.getItem('username');
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -31,7 +32,7 @@ const Search = () => {
         return;
       }
 
-      const conversationName = `With ${username}`;
+      const conversationName = `${currentusername} with ${username}`;
       const conversation = await createConversation(conversationName, currentUserId);
 
       await addMemberToConversation(conversation.conversationId, userId);

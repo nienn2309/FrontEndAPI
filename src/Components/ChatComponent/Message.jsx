@@ -11,7 +11,6 @@ const Message = ({ content, sentAt, isOwner }) => {
         <span>{new Date(sentAt).toLocaleTimeString()}</span>
       </div>
       <div className='messageContent'>
-        {/* Use dangerouslySetInnerHTML to handle newlines */}
         <p dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }} />
       </div>
     </div>

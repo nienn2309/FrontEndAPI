@@ -26,9 +26,9 @@ export const initializeSignalR = async () => {
 
 export const subscribeToMessages = (callback) => {
   hubConnection.off("ReceiveMessage");
-  hubConnection.on("ReceiveMessage", (user, message) => {
-    console.log(`${user}: ${message}`);
-    if (callback) callback(user, message);
+  hubConnection.on("ReceiveMessage", (user, message, conversationId) => {
+    console.log(`${user}: ${message} in conversation: ${conversationId}`);
+    if (callback) callback(user, message, conversationId);
   });
 };
 
@@ -39,7 +39,7 @@ export const joinConversationGroup = async (conversationId) => {
 
   try {
     await hubConnection.invoke("JoinGroup", conversationId);
-    console.log(`Joined group for conversation: ${conversationId}`);
+    //console.log(`Joined group for conversation: ${conversationId}`);
   } catch (err) {
     console.error("Error joining group:", err);
   }
@@ -52,7 +52,7 @@ export const leaveConversationGroup = async (conversationId) => {
 
   try {
     await hubConnection.invoke("LeaveGroup", conversationId);
-    console.log(`Left group for conversation: ${conversationId}`);
+    //console.log(`Left group for conversation: ${conversationId}`);
   } catch (err) {
     console.error("Error leaving group:", err);
   }
