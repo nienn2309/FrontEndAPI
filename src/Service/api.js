@@ -4,7 +4,7 @@ const API_BASE_URL = 'https://localhost:7213/api';
 
 // SignalR connection setup
 const hubConnection = new signalR.HubConnectionBuilder()
-  .withUrl("https://localhost:7213/chatHub", {
+  .withUrl("https://localhost:7203/chatHub", {
     skipNegotiation: true,
     transport: signalR.HttpTransportType.WebSockets,
   })
