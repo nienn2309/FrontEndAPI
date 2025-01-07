@@ -29,12 +29,15 @@ export const initializeSignalR = async () => {
 
 export const subscribeToMessages = (callback) => {
   hubConnection.off("ReceiveMessage");
-  hubConnection.on("ReceiveMessage", (user, message, conversationId) => {
-    if (conversationId === activeConversationId) {
-      if (callback) callback(user, message, conversationId);
-      console.log(`${user}: ${message} in conversation: ${conversationId}`);
-    }
-  });
+
+  if (callback) {
+    hubConnection.on("ReceiveMessage", (user, message, conversationId) => {
+      if (conversationId === activeConversationId) {
+        callback(user, message, conversationId);
+        console.log(`${user}: ${message} in conversation: ${conversationId}`);
+      }
+    });
+  }
 };
 
 export const subscribeToConversationTimeUpdates = (callback) => {
